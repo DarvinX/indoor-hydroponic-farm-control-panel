@@ -43,9 +43,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
   var database = firebase.database()
 
-  var hansda_air_ref = database.ref("/hansda/air").limitToLast(7)
+  chart_update_from_database(database, "/hansda/air", air_chart)
+});
 
-  hansda_air_ref.once('value', (snapshot) => {
+function get_chart(canvas_name, config) {
+  var _chart = new Chart(document.getElementById(canvas_name).getContext("2d"),
+    config);
+  return _chart;
+}
+
+function chart_update_from_database(database, database_location, chart) {
+  var database_ref = database.ref(database_location)
+
+  database_ref.limitToLast(7).once('value', (snapshot) => {
     // console.log(snapshot.val);
     var data = []
     snapshot.forEach((childSnapshot) => {
@@ -53,16 +63,29 @@ window.addEventListener("DOMContentLoaded", () => {
       // console.log("I loaded");
     });
     console.log(data);
-    air_chart.data.datasets[0].data = data;
-    air_chart.update();
+    chart.data.datasets[0].data = data;
+    chart.update();
   });
 
-});
+  database_ref.limitToLast(1).on("value", (snapshot) => {
+    // const data = snapshot[0].val();
 
-function get_chart(canvas_name, config) {
-  return new Chart(document.getElementById(canvas_name).getContext("2d"),
-    config);
+    snapshot.forEach((childSnapshot) => {
+      var data = childSnapshot.val()
+      chart.data.datasets[0].data.shift()
+      chart.data.datasets[0].data.push(data)
+
+      // console.log(chart.data.datasets[0].data);
+      console.log(data);
+      chart.update()
+    })
+
+
+  })
+
 }
+
+
 
 function get_config(datasets) {
   const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
