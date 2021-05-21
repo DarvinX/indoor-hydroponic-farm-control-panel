@@ -1,91 +1,44 @@
 window.addEventListener("DOMContentLoaded", () => {
-  // console.log("I ran");
 
-  var humidity_ctx = document.getElementById("humidity_canvas").getContext("2d");
-  var temp_ctx = document.getElementById("temp_canvas").getContext("2d");
-  var air_ctx = document.getElementById("air_canvas").getContext("2d");
+  const zero_data = new Array(7).fill(0)
+  // console.log(zero_data);
 
-  const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
-
-  var humidity_config = {
-    type: "line",
-    data: {
-      labels: labels,
-
-      datasets: [
-        {
-          label: "humidity",
-          data: [12, 19, 3, 5, 2, 3, 7],
-          fill: false,
-          borderColor: "#b71705",
-          borderWidth: 2,
-          tension: 0.1,
-        },
-      ],
+  var humidity_config = get_config([
+    {
+      label: "humidity",
+      data: zero_data,
+      fill: false,
+      borderColor: "#b71705",
+      borderWidth: 2,
+      tension: 0.1,
     },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
-      },
+  ])
+
+  var temp_config = get_config([
+    {
+      label: "temp",
+      data: zero_data,
+      fill: false,
+      borderColor: "#e72705",
+      borderWidth: 2,
+      tension: 0.1,
     },
-  };
+  ])
 
-  var temp_config = {
-    type: "line",
-    data: {
-      labels: labels,
-
-      datasets: [
-        {
-          label: "temp",
-          data: [20, 19, 23, 25, 31, 31, 27],
-          fill: false,
-          borderColor: "#e72705",
-          borderWidth: 2,
-          tension: 0.1,
-        },
-      ],
+  var air_config = get_config([
+    {
+      label: "Air Pressure",
+      data: zero_data,
+      fill: false,
+      borderColor: "#e727e5",
+      borderWidth: 2,
+      tension: 0.1,
     },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
-      },
-    },
-  };
+  ])
 
-
-  var air_config = {
-    type: "line",
-    data: {
-      labels: labels,
-
-      datasets: [
-        {
-          label: "Air Pressure",
-          data: [44, 49, 43, 45, 41, 31, 37],
-          fill: false,
-          borderColor: "#e727e5",
-          borderWidth: 2,
-          tension: 0.1,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: false,
-        },
-      },
-    },
-  };
-
-  var humidity_chart = new Chart(humidity_ctx, humidity_config);
-  var temp_chart = new Chart(temp_ctx, temp_config);
-  var air_chart = new Chart(air_ctx, air_config);
+  var humidity_chart = get_chart("humidity_canvas", humidity_config);
+  var temp_chart = get_chart("temp_canvas", temp_config);
+  var air_chart = get_chart("air_canvas", air_config);
 
 
   var database = firebase.database()
@@ -105,3 +58,29 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+function get_chart(canvas_name, config) {
+  return new Chart(document.getElementById(canvas_name).getContext("2d"),
+    config);
+}
+
+function get_config(datasets) {
+  const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
+
+  return {
+    type: "line",
+    data: {
+      labels: labels,
+
+      datasets: datasets
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: false,
+        },
+      },
+    },
+  };
+
+}
