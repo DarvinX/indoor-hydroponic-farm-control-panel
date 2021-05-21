@@ -1,11 +1,11 @@
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("I ran");
+  // console.log("I ran");
 
   var humidity_ctx = document.getElementById("humidity_canvas").getContext("2d");
   var temp_ctx = document.getElementById("temp_canvas").getContext("2d");
   var air_ctx = document.getElementById("air_canvas").getContext("2d");
 
-const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
+  const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
 
   var humidity_config = {
     type: "line",
@@ -77,7 +77,7 @@ const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
     options: {
       scales: {
         y: {
-          beginAtZero: true,
+          beginAtZero: false,
         },
       },
     },
@@ -86,5 +86,22 @@ const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
   var humidity_chart = new Chart(humidity_ctx, humidity_config);
   var temp_chart = new Chart(temp_ctx, temp_config);
   var air_chart = new Chart(air_ctx, air_config);
+
+
+  var database = firebase.database()
+
+  var hansda_air_ref = database.ref("/hansda/air").limitToLast(7)
+
+  hansda_air_ref.once('value', (snapshot) => {
+    // console.log(snapshot.val);
+    var data = []
+    snapshot.forEach((childSnapshot) => {
+      data.push(childSnapshot.val())
+      // console.log("I loaded");
+    });
+    console.log(data);
+    air_chart.data.datasets[0].data = data;
+    air_chart.update();
+  });
 
 });
