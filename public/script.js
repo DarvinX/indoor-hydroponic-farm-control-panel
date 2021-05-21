@@ -1,13 +1,13 @@
 window.addEventListener("DOMContentLoaded", () => {
   console.log("I ran");
 
-  var ctx = document.getElementById("humidity_canvas").getContext("2d");
-  var temp = document.getElementById("temp_canvas").getContext("2d");
-  var air = document.getElementById("air_canvas").getContext("2d");
+  var humidity_ctx = document.getElementById("humidity_canvas").getContext("2d");
+  var temp_ctx = document.getElementById("temp_canvas").getContext("2d");
+  var air_ctx = document.getElementById("air_canvas").getContext("2d");
 
 const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
 
-  var humidity = {
+  var humidity_config = {
     type: "line",
     data: {
       labels: labels,
@@ -83,12 +83,8 @@ const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
     },
   };
 
-  var humidity_chart = new Chart(ctx, humidity);
-  var temp_chart = new Chart(temp, temp_config);
-  var air_chart = new Chart(air, air_config);
-
-
-
-
+  var humidity_chart = new Chart(humidity_ctx, humidity_config);
+  var temp_chart = new Chart(temp_ctx, temp_config);
+  var air_chart = new Chart(air_ctx, air_config);
 
 });
