@@ -16,10 +16,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
   var temp_config = get_config([
     {
-      label: "temp",
+      label: "Temp(Seni)",
       data: zero_data,
       fill: false,
       borderColor: "#e72705",
+      borderWidth: 2,
+      tension: 0.1,
+    },
+    {
+      label: "Temp(Hansda)",
+      data: zero_data,
+      fill: false,
+      borderColor: "#6a2c70",
       borderWidth: 2,
       tension: 0.1,
     },
@@ -44,6 +52,10 @@ window.addEventListener("DOMContentLoaded", () => {
   var database = firebase.database()
 
   chart_update_from_database(database, "/hansda/air", air_chart)
+  chart_update_from_database(database, "/SUPRIYO/Humidity", humidity_chart)
+  chart_update_from_database(database, "/SUPRIYO/Temperature", temp_chart)
+  chart_update_from_database(database, "/hansda/temp", temp_chart, 1)
+
 });
 
 function get_chart(canvas_name, config) {
@@ -52,8 +64,9 @@ function get_chart(canvas_name, config) {
   return _chart;
 }
 
-function chart_update_from_database(database, database_location, chart) {
+function chart_update_from_database(database, database_location, chart, dataset_index = 0) {
   var database_ref = database.ref(database_location)
+  var first = true;
 
   database_ref.limitToLast(7).once('value', (snapshot) => {
     // console.log(snapshot.val);
@@ -63,22 +76,26 @@ function chart_update_from_database(database, database_location, chart) {
       // console.log("I loaded");
     });
     console.log(data);
-    chart.data.datasets[0].data = data;
+    chart.data.datasets[dataset_index].data = data;
     chart.update();
   });
 
   database_ref.limitToLast(1).on("value", (snapshot) => {
     // const data = snapshot[0].val();
 
-    snapshot.forEach((childSnapshot) => {
-      var data = childSnapshot.val()
-      chart.data.datasets[0].data.shift()
-      chart.data.datasets[0].data.push(data)
+    if (first) {
+      first = false
+    } else {
+      snapshot.forEach((childSnapshot) => {
+        var data = childSnapshot.val()
+        chart.data.datasets[dataset_index].data.shift()
+        chart.data.datasets[dataset_index].data.push(data)
 
-      // console.log(chart.data.datasets[0].data);
-      console.log(data);
-      chart.update()
-    })
+        console.log(data);
+        chart.update()
+      })
+    }
+
 
 
   })
