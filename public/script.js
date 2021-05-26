@@ -1,47 +1,24 @@
+const zero_data = new Array(7).fill(0)
+
+
 window.addEventListener("DOMContentLoaded", () => {
 
-  const zero_data = new Array(7).fill(0)
   // console.log(zero_data);
 
   var humidity_config = get_config([
-    {
-      label: "humidity",
-      data: zero_data,
-      fill: false,
-      borderColor: "#b71705",
-      borderWidth: 2,
-      tension: 0.1,
-    },
+    get_default_dataset("Humidity(Seni)", "#b71705"),
+    get_default_dataset("Humidity(Bag)", "#000000"),
+
   ])
 
   var temp_config = get_config([
-    {
-      label: "Temp(Seni)",
-      data: zero_data,
-      fill: false,
-      borderColor: "#e72705",
-      borderWidth: 2,
-      tension: 0.1,
-    },
-    {
-      label: "Temp(Hansda)",
-      data: zero_data,
-      fill: false,
-      borderColor: "#6a2c70",
-      borderWidth: 2,
-      tension: 0.1,
-    },
+    get_default_dataset("Temp(Seni)", "#e72705"),
+    get_default_dataset("Temp(Hansda)", "#6a2c70"),
+    get_default_dataset("Temp(Bag)", "#000000"),
   ])
 
   var air_config = get_config([
-    {
-      label: "Air Pressure",
-      data: zero_data,
-      fill: false,
-      borderColor: "#e727e5",
-      borderWidth: 2,
-      tension: 0.1,
-    },
+    get_default_dataset("Air Pressure", "#e727e5")
   ])
 
   var humidity_chart = get_chart("humidity_canvas", humidity_config);
@@ -53,10 +30,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
   chart_update_from_database(database, "/hansda/air", air_chart)
   chart_update_from_database(database, "/SUPRIYO/Humidity", humidity_chart)
+  chart_update_from_database(database, "/Voda/Humidity", humidity_chart, 1)
   chart_update_from_database(database, "/SUPRIYO/Temperature", temp_chart)
   chart_update_from_database(database, "/hansda/temp", temp_chart, 1)
-
+  chart_update_from_database(database, "/Voda/Temperature", temp_chart, 2)
 });
+
+function get_default_dataset(label, color) {
+
+  return {
+    label: label,
+    data: zero_data,
+    fill: false,
+    borderColor: color,
+    borderWidth: 2,
+    tension: 0.1
+  }
+}
 
 function get_chart(canvas_name, config) {
   var _chart = new Chart(document.getElementById(canvas_name).getContext("2d"),
@@ -95,14 +85,8 @@ function chart_update_from_database(database, database_location, chart, dataset_
         chart.update()
       })
     }
-
-
-
   })
-
 }
-
-
 
 function get_config(datasets) {
   const labels = ["-6", "-5", "-4", "-3", "-2", "-1", "0"]
@@ -111,7 +95,6 @@ function get_config(datasets) {
     type: "line",
     data: {
       labels: labels,
-
       datasets: datasets
     },
     options: {
