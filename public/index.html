@@ -58,20 +58,18 @@
       </h3>
 
       <div class="row">
-        <label for="customRange1" class="col">Servo Angle</label>
-        <input type="range" class="custom-range col" id="customRange1" min="1000" max="2000" step="1">
+        <label for="servo_angle" class="col">Servo Angle</label>
+        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="servo_angle" min="1000" max="2000" step="1">
       </div>
       <br>
       <div class="row">
-
-        <label for="customRange1" class="col">Fan Speed</label>
-        <input type="range" class="custom-range col" id="customRange1" min="1000" max="2000" step="1">
+        <label for="fan_speed" class="col">Fan Speed</label>
+        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="fan_speed" min="1000" max="2000" step="1">
       </div>
       <br>
       <div class="row">
-
-        <label for="customRange1" class="col">Light Intensity</label>
-        <input type="range" class="custom-range col" id="customRange1" min="1000" max="2000" step="1">
+        <label for="light_intensity" class="col">Light Intensity</label>
+        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="light_intensity" min="1000" max="2000" step="1">
       </div>
     </div>
   </div>
@@ -80,7 +78,7 @@
       Webpage Developed by T. Hansda
     </div>
     <div>
-      Contributors: S. Seni, N. Sasmol, A. Bag
+      Contributors: S. Seni, N. Sasmal, A. Bag
     </div>
   </footer>
 </body>

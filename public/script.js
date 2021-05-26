@@ -1,14 +1,9 @@
 const zero_data = new Array(7).fill(0)
-
-
+var database;
 window.addEventListener("DOMContentLoaded", () => {
-
-  // console.log(zero_data);
-
   var humidity_config = get_config([
     get_default_dataset("Humidity(Seni)", "#b71705"),
     get_default_dataset("Humidity(Bag)", "#000000"),
-
   ])
 
   var temp_config = get_config([
@@ -26,7 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
   var air_chart = get_chart("air_canvas", air_config);
 
 
-  var database = firebase.database()
+  database = firebase.database()
 
   chart_update_from_database(database, "/hansda/air", air_chart)
   chart_update_from_database(database, "/SUPRIYO/Humidity", humidity_chart)
@@ -34,10 +29,31 @@ window.addEventListener("DOMContentLoaded", () => {
   chart_update_from_database(database, "/SUPRIYO/Temperature", temp_chart)
   chart_update_from_database(database, "/hansda/temp", temp_chart, 1)
   chart_update_from_database(database, "/Voda/Temperature", temp_chart, 2)
+
+  updateSliders()
 });
 
-function get_default_dataset(label, color) {
+// Handle control signals
+function sliderChange(element) {
+  console.log(element.id, element.value);
+  database.ref("/controls/" + element.id).set(element.value)
+}
 
+function updateSliders(id = undefined, value = undefined) {
+  if (id && value) {
+    document.getElementById(id).value = value;
+  } else {
+    database.ref("/controls").once('value', snapshot => {
+      // console.log(snapshot);
+      snapshot.forEach(childSnapshot => {
+        updateSliders(childSnapshot.key, childSnapshot.val())
+      })
+    })
+  }
+}
+
+
+function get_default_dataset(label, color) {
   return {
     label: label,
     data: zero_data,
@@ -65,14 +81,12 @@ function chart_update_from_database(database, database_location, chart, dataset_
       data.push(childSnapshot.val())
       // console.log("I loaded");
     });
-    console.log(data);
+    // console.log(data);
     chart.data.datasets[dataset_index].data = data;
     chart.update();
   });
 
   database_ref.limitToLast(1).on("value", (snapshot) => {
-    // const data = snapshot[0].val();
-
     if (first) {
       first = false
     } else {
@@ -81,7 +95,7 @@ function chart_update_from_database(database, database_location, chart, dataset_
         chart.data.datasets[dataset_index].data.shift()
         chart.data.datasets[dataset_index].data.push(data)
 
-        console.log(data);
+        // console.log(data);
         chart.update()
       })
     }
@@ -105,5 +119,5 @@ function get_config(datasets) {
       },
     },
   };
-
 }
+
