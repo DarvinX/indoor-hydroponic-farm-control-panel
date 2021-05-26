@@ -36,12 +36,12 @@ window.addEventListener("DOMContentLoaded", () => {
 // Handle control signals
 function sliderChange(element) {
   console.log(element.id, element.value);
-  database.ref("/controls/" + element.id).set(element.value)
+  database.ref("/controls/" + element.id).set(Number(element.value))
 }
 
 function updateSliders(id = undefined, value = undefined) {
   if (id && value) {
-    document.getElementById(id).value = value;
+    document.getElementById(id).value = Number(value);
   } else {
     database.ref("/controls").once('value', snapshot => {
       // console.log(snapshot);
