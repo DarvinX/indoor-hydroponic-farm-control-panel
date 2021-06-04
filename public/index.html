@@ -4,6 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ("serviceWorker" in navigator) {
+      // register service worker
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
   <title>IoT for Agriculture</title>
 
   <!-- update the version number as needed -->
@@ -59,17 +66,20 @@
 
       <div class="row">
         <label for="servo_angle" class="col">Servo Angle</label>
-        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="servo_angle" min="1000" max="2000" step="1">
+        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="servo_angle" min="1000"
+          max="2000" step="1">
       </div>
       <br>
       <div class="row">
         <label for="fan_speed" class="col">Fan Speed</label>
-        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="fan_speed" min="1000" max="2000" step="1">
+        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="fan_speed" min="1000" max="2000"
+          step="1">
       </div>
       <br>
       <div class="row">
         <label for="light_intensity" class="col">Light Intensity</label>
-        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="light_intensity" min="1000" max="2000" step="1">
+        <input onchange="sliderChange(this)" type="range" class="custom-range col" id="light_intensity" min="1000"
+          max="2000" step="1">
       </div>
     </div>
   </div>
