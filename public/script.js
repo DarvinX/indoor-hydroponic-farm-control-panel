@@ -31,7 +31,19 @@ window.addEventListener("DOMContentLoaded", () => {
   chart_update_from_database(database, "/Voda/Temperature", temp_chart, 2)
 
   updateSliders()
+
+  live_feed(database, "/hansda/picture", "pic")
 });
+
+function live_feed(database, ref, img_id) {
+  let img = document.getElementById(img_id)
+  var database_ref = database.ref(ref)
+  database_ref.on("value", (snapshot) => {
+    // console.log(snapshot.val());
+    img.src = snapshot.val()
+
+  })
+}
 
 // Handle control signals
 function sliderChange(element) {
